@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <style>
+          * {
+              box-sizing: border-box;
+          }
+         
+          body {
+              font-family: Arial, Helvetica, sans-serif;
+          }
+         
+          /* Style the header */
+          .header {
+  overflow: hidden;
+  background-color: #086c85;
+  padding: 20px 10px;
+}
+
+
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.header a:hover {
+  background-color: rgb(48, 189, 231);
+  color: black;
+}
+.header h1{
+    color: rgb(11, 71, 87);
+    text-align:center;
+    background:white;
+    
+}
+.header a.active {
+  background-color: dodgerblue;
+  color: blue;
+}
+
+.header-right {
+  float: right;
+  
+}
+.header h2{
+    color: white;
+    font-size: 25px;
+    text-align:center;
+    
+    
+}
+
+         
+          /* Create two columns/boxes that floats next to each other */
+          nav {
+              float: left;
+              width: 30%;
+              height: 300px; /* only for demonstration, should be removed */
+              background: #ccc;
+              padding: 20px;
+          }
+         
+          /* Style the list inside the menu */
+          nav ul {
+              list-style-type: none;
+              padding: 0;
+          }
+         
+          article {
+              float: right;
+              padding: 20px;
+              width: 95%;
+              background-color: #1e7f97;
+              height:100px; /* only for demonstration, should be removed */
+          }
+         
+          /* Clear floats after the columns */
+          section:after {
+              content: "";
+              display: table;
+              clear: both;
+          }
+         
+          /* Style the footer */
+          footer {
+              background-color: rgb(73, 156, 194);
+              text-align: center;
+              color: white;
+          }
+         
+          .btn-group button {
+    background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 30px 30px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: right; /* Float the buttons side by side */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+h4{
+    color: white;
+}
+          </style>
+  </head>
+<body>
+    
+          <div class="header">
+              <div style="float: left">
+                <img src="download.jpg" alt="Blockchain" height="65" width="300"><br><br>
+                <img src="EAS_DTO_Logo_white_bg.png" alt="Blockchain" height="60" width="250">
+              </div>
+                <div class="header-right">
+                        <h2> <img src="../code_pattern/Hyperledger_Fabric_Logo_White.jpg" alt="Blockchain" height="60" width="200"> </h2><h4><i style="font-size: 180%">Blockchain for Business </i>WITH IBM BLOCKCHAIN</h4>
+                        
+                </div>
+</div>
+
+
+
+<div class="btn-group">
+
+        
+		 <button><a href="update_shipment.html" target="iframe_a">Dashboard</button>
+        <button><a href="hospital.html" target="iframe_a">Hospital</button>
+        <button><a href="techsale.html" target="iframe_a">Dealer</button>
+        <button><a href="distributor.html" target="iframe_a">Distributor</button>
+        <button><a href="manufacturer.html" target="iframe_a">Manufacturer</button>
+		<button><a href="dashboard.html" target="iframe_a">Home</button>
+<h2>TRACK AND TRACE </h2>
+      </div>
+	   <br>
+<iframe height="450px" width="100%" src="dashboard.html" name="iframe_a"></iframe>
+<footer>
+  <p>@copyright 2018</p>
+</footer>
+</body>
