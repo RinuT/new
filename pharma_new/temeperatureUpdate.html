@@ -1,0 +1,105 @@
+<html>
+ 
+<head>
+  
+               
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+ 
+<!-- Compiled and minified JavaScript -->
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ 
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+ 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body {font-family: Arial;}
+  div#envelope{
+  width: 55%;
+  margin: 10px 30% 10px 25%;
+  padding:10px 0;
+  border: 2px solid gray;
+  height: 90%;
+  }
+
+</style>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+    <div id="envelope">
+    <h4><b> TEMPERATURE UPDATE (IoT)</b></h4>
+    <div>
+    <table style="width:100%">
+    <tr><th><input type="text" name="orderID" placeholder="Enter order ID" ng-model="orderID" required></th></tr>
+    <tr><th><input type="text" name="temperature" placeholder="Current temperature" ng-model="temperature"></th></tr>
+    <tr><th><input type="text" name="orderer" placeholder="pharmacy Name" ng-model="orderer"></th></tr>
+    <tr><th><input type="submit" ng-click="Create()"></th></tr>
+ 
+    </table> 
+    </div>
+    <div>
+    </div>
+    </div>
+    <div ng-show="sucess">
+       Updated order temeprature with transaction Id {{transactionId}}
+      </div>
+</div>
+ 
+</body>
+<script>
+  
+var app = angular.module('myApp', []);
+ 
+app.controller('myCtrl',['$scope','$http','$timeout',function ($scope,$http,$timeout) {
+  $scope.sucess=false
+  $scope.transactionId="";
+$scope.Create = function(){
+  $scope.message = "Product have been created sucessfully";
+$scope.setValue();
+}
+$scope.setValue=function() {
+ 
+  var request={
+    "$class": "org.acme.pharma_network.temepratureUpdate",
+  "orderId": $scope.orderID,
+  "temperature": $scope.temperature,
+  "orderer": "resource:org.acme.pharma_network.Pharmacy#"+$scope.orderer
+}
+     var requestInfo = Request();
+   
+     data : requestInfo
+ 
+  var res = $http.post('http://ec2-54-158-121-223.compute-1.amazonaws.com:3000/api/temepratureUpdate',request).then(function successCallback(response){
+           alert("Successfully updated order temperature");
+           $scope.update_response=response;
+           $scope.sucess=true
+           $scope.transactionId=$scope.update_response.data.transactionId
+          
+       }, function errorCallback(response){
+           console.log("POST-ing of data failed");
+       });
+}
+ 
+function Request() {
+ 
+  return {
+    "Request" : {
+        "$class": "org.acme.pharma_network.temepratureUpdate",
+  "orderId": "",
+  "temperature": "",
+  "orderer": "resource:org.acme.pharma_network.Pharmacy#9456"
+   }
+    }
+  };
+ 
+}]);
+ 
+ 
+ 
+</script>
+ 
+</html>

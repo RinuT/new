@@ -1,0 +1,162 @@
+<html>
+ 
+<head>
+  
+               
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+ 
+<!-- Compiled and minified JavaScript -->
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ 
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+ 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+  body {font-family: Arial;}
+  div#envelope{
+  width: 55%;
+  margin: 10px 30% 10px 25%;
+  padding:10px 0;
+  border: 2px solid gray;
+  height: 90%;
+  }
+
+</style>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+  <div id="envelope">
+    <h4><b> REGISTER DRUG </b></h4>
+    <div>
+    <table style="width:100%">
+    <tr><th><input type="text" name="drugID" placeholder="Enter drug ID" ng-model="drugID" required></th></tr>
+    <tr><th><input type="text" name="drugName" placeholder="Enter drug name" ng-model="drugName" ></th></tr>
+    <tr><th><input type="text" name="make" placeholder="Manufacturer  name" ng-model="make"></th></tr>
+    <tr>
+      <th>COMPONENT</th>
+      <th></th>
+  </tr>
+  
+      <tr ng-repeat="m in Customers">
+          <td>{{m.components}}</td>
+          
+          <td><input type="button" ng-click="Remove($index)" value="Remove" /></td>
+      </tr>
+      <tr>
+          <td><input type="text" ng-model="components" /></td>
+          <td><input type="button" ng-click="Add()" value="Add" /></td>
+      </tr>
+    <tr><th><input type="submit" ng-click="Create()"></th></tr>
+    </table> 
+    </div>
+    </div>
+    <div ng-show="sucess">
+      Registered with transaction Id {{transactionId}}
+    </div> 
+</div>
+
+</body>
+<script>
+  
+var app = angular.module('myApp', []);
+ 
+app.controller('myCtrl',['$scope','$http','$timeout',function ($scope,$http,$timeout) {
+  $scope.transactionId="";
+  
+  $scope.componenets_m = [];
+  $scope.Customers = [];
+  $scope.Customers.components = [];
+  $scope.sucess=false
+  $scope.Create = function(){
+  $scope.message = "Product have been created sucessfully";
+  $scope.uuid_1=$scope.uuid;
+  $scope.setValue();
+  }
+  $scope.Add = function () {
+       //Add the new item to the Array.
+    var customer = {};
+    var customers = {};
+     customer.components=[];
+     $scope.componenets_m.push($scope.components)
+     customers.components = $scope.components;
+     $scope.Customers.push(customers);
+     $scope.supplier = "";
+     $scope.temeperature = "";
+     $scope.components = "";
+ };
+ $scope.Remove = function (index) {
+     //Find the record using Index from Array.
+     var name = $scope.Customers[index].Name;
+         $scope.Customers.splice(index, 1);
+     
+ }
+  $scope.setValue=function() {
+ 
+  var drugName =  $scope.drugName;
+  var quantity = $scope.quantity;
+  var drugStatus = "AVAILABLE";
+  var make =  $scope.make;
+  var supplier = $scope.supplier
+  var componenets_m=[];
+ componenets_m= $scope.componenets_m
+  var make="resource:org.acme.pharma_network.Manufacturer#"+make
+  var supplier= "resource:org.acme.pharma_network.Supplier#"+supplier
+  var request={
+  "$class": "org.acme.pharma_network.register",
+  "din": $scope.drugID,
+  "drug": {
+    "$class": "org.acme.pharma_network.Drug",
+    "drugName": drugName,
+    "quantity": 0,
+    "drugStatus": "AVAILABLE",
+    "make": make,
+    "components":componenets_m,
+    "batch": []
+  }
+}
+     var requestInfo = Request();
+   
+     data : requestInfo
+ 
+  var res = $http.post('http://ec2-54-158-121-223.compute-1.amazonaws.com:3000/api/register',request).then(function successCallback(response){
+           alert("Successfully registered product");
+           $scope.sucess=true
+           $scope.update_response=response;
+           $scope.transactionId=$scope.update_response.data.transactionId
+          
+       }, function errorCallback(response){
+           console.log("POST-ing of data failed");
+       });
+}
+ 
+function Request() {
+ 
+  return {
+    "Request" : {
+        "$class": "org.acme.pharma_network.register",
+  "din": "",
+  "drug": {
+    "$class": "org.acme.pharma_network.Drug",
+    "drugName": "",
+    "quantity": 0,
+    "drugStatus": "AVAILABLE",
+    "make": "",
+    "components":"",
+    "batch": []
+  }
+   }
+    }
+  };
+ 
+}]);
+ 
+ 
+ 
+</script>
+ 
+</html>

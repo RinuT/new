@@ -1,0 +1,173 @@
+<html>
+<head>
+<title>Shadow Distributor Product Page</title>
+<!-- Compiled and minified CSS -->
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+<!-- Compiled and minified JavaScript -->
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons"rel="stylesheet">
+
+<style>
+/* Always set the map height explicitly to define the size of the div
+* element that contains the map. */
+.input-field>label {
+color: white!important;
+font-weight:
+500!important;
+font-size:
+1.2rem!important;
+}
+#map {
+height: 85%;
+}
+/* Optional: Makes the sample page fill the window. */
+html,body {
+height: 100%;
+margin: 0;
+padding:0;
+}
+input {
+color: rgb(15, 15, 15);
+}
+label {
+color: white;
+font-size:1rem!important;
+}
+table {
+border-style: solid;
+border-color: white;
+}
+th {
+border-style: solid;
+border-color: white;
+text-align: center;
+}
+td {
+border-style: solid;
+border-color: white;
+}
+thead {
+border-color: white;
+}
+tbody {
+border-color: white;
+}
+.loader {
+border: 6px
+solid #f3f3f3;
+border-radius:50%;
+border-top:6px solid #e8edf0;
+width: 30px;
+height: 30px;
+-webkit-animation: spin 2s linear infinite;
+/* Safari */
+animation: spin 2s linear infinite;
+margin-top:28px;
+}
+</style>
+</head>
+<body>
+        <div  ng-app="myApp" ng-controller="myCtrl">
+<div class="col s12 m6"id="status_form"style="display:block;">
+<div>
+<div class="card-title"style="background-color:white;padding: 0.2%;text-align: center;">
+<h5>PHARMA NETWORK(All)</h5>
+</div>
+<div class="card-content white-text"> 
+<div class="row"style="margin-bottom:5%!important">
+<form class="col s12">
+<div class="input-field col s6">
+<input id="barcode"type="text"ng-model="uuid" required>
+<label class="active"for="barcode">Search ID here</label>
+</div>
+<div class="col s6">
+<a class="waves-effect waves-light btn-large"ng-click="search()">
+<i class="large material-icons">search</i>
+</a>
+</div>
+</form>
+</div>
+</div>
+</div>
+</div>
+<div ng-show="show">
+<div class="col s12" >
+<div style= "padding: 2%;""text-align: center;">
+<table BORDER=10 BORDERCOLOR=WHITE>
+<thead style="background-color:#8fb2b9;"><tr>
+<th >Drug Id</th>
+<th>Drug Name</th>
+<th >Quantity</th>
+<th>Drug Status</th>
+</tr>
+</thead>
+<tbody style="background-color:#b3c8cb;">
+<tr>
+<td>{{din}}</td>
+<td>{{drugName}}</td>
+<td>{{quantity}}</td>
+<td>{{drugStatus}}</td>
+</tr>
+</tbody>
+</table>
+</div>
+</div>
+</div>
+</div>
+</body>
+<script>
+var app =angular.module('myApp', []);
+app.controller('myCtrl',['$scope','$http','$timeout',
+function ($scope,$http,$timeout) {
+$scope.din=" "
+$scope.drugName=" "
+$scope.quantity=" "
+$scope.drugStatus=" "
+$scope.show=false;
+function Request() {
+return {
+"Request" : {
+    "$class": "org.acme.pharma_network.search",
+ "din": ""
+}
+}
+};
+function init(){
+var websocket =new WebSocket("ws://ec2-54-158-121-223.compute-1.amazonaws.com:3000");
+websocket.addEventListener('open',evt =>doSocketOpen(evt));
+websocket.addEventListener('message',evt =>doSocketMessage(evt));
+websocket.addEventListener('close',evt =>doSocketClose(evt));
+}
+function doSocketClose(evt) {
+console.log('Close.');
+}
+function doSocketMessage(evt) {
+let data =JSON.parse(evt.data);
+$scope.show=true;
+$scope.din=data.din
+$scope.drugName=data.drug.drugName
+$scope.quantity=data.drug.quantity
+$scope.drugStatus=data.drug.drugStatus
+}
+function doSocketOpen(evt) {
+console.log('Open.');
+}
+$scope.search=function(){
+init();
+var uuid =$scope.uuid;
+var request={"$class": "org.acme.pharma_network.search",
+ "din": uuid};
+ var requestInfo = Request();
+$http.post("http://ec2-54-158-121-223.compute-1.amazonaws.com:3000/api/search",request).then((function(data,status,
+headers,config) {
+console.log("success");
+}),(function(data,status,headers,config) {
+alert( "No product with specified UUID");
+}));
+}
+}]);
+</script>
+</html>

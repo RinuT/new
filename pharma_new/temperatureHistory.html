@@ -1,0 +1,117 @@
+<!DOCTYPE html>
+<html> 
+
+<head>
+<title>Supply Chain</title>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/Chart.js/2.4.0/Chart.min.js"></script>
+<style>.noHover{
+        pointer-events: none;
+    }</style>
+</head>
+
+<body >
+<div ng-app="myApp" ng-controller="myCtrl">
+<div>
+    <input id="statusid" placeholder="" type="text" width="100px;"ng-model="uuid" required>
+    <input id="searchsubmit" type="submit" value="Search" ng-click="search()">
+</div>
+<canvas id="myChart" class="noHover" style="height: 90px; width: 300px;" ng-show='show'></canvas>
+
+</div>
+</body>
+
+<script>
+var app = angular.module('myApp', []);
+app.controller('myCtrl',['$scope', '$http','$timeout', function ($scope, $http,$timeout) {
+
+$scope.data=[];
+$scope.show=false;
+
+function Request_search() {
+ return {
+ "Request" : {
+ "$class":"org.acme.pharma_network.temperatureEvent",
+ "orderId":""
+ }
+ }
+ };
+$scope.search=function(){
+    init();
+ var uuid =$scope.uuid; 
+ var search_payload={"$class":"org.acme.pharma_network.temperatureEvent","orderId":uuid}; 
+ var requestInfo =Request_search();
+ $http.post("http://ec2-54-158-121-223.compute-1.amazonaws.com:3000/api/temperatureEvent",search_payload).then((function(data,status,headers,config) {
+ $scope.show=true;
+ console.log("success");
+ }),(function(data,status,headers,config) {
+ alert( "No product with specified UUID");
+ }));
+ }
+
+ function init(){
+var websocket =new WebSocket("ws://ec2-54-158-121-223.compute-1.amazonaws.com:3000");
+websocket.addEventListener('open',evt =>doSocketOpen(evt));
+websocket.addEventListener('message',evt =>doSocketMessage(evt));
+websocket.addEventListener('close',evt =>doSocketClose(evt));
+}
+function doSocketOpen(evt) {
+console.log('Open.');
+}
+function doSocketMessage(evt) {
+$scope.data.push(JSON.parse(evt.data));
+//console.log($scope.data)
+chart();
+}
+function chart(){
+    var len=$scope.data.length;
+    var dataString=[];
+    var colur=[];
+    var temperature=[];
+    var shipmentStatus=[];
+    var chart=[];
+    var ctx='';
+    for(var i=0;i<len;i++){
+
+if($scope.data[i].temperature>50){
+      colur.push("#ff0000");
+}
+      else{
+     colur.push("rgb(50,205,50)");
+      }
+temperature.push($scope.data[i].temperature)  
+shipmentStatus.push("("+$scope.data[i].orderStatus+","+"\t"+$scope.data[i].temperature+")")
+}
+    
+var ctx = document.getElementById('myChart').getContext('2d');
+    console.log(ctx);
+var chart = new Chart(ctx, {
+    // The type of chart we want to create
+    type: 'bar',
+
+    // The data for our dataset
+    data: {
+        labels: shipmentStatus,
+        datasets: [{
+            label: "My First dataset",
+            backgroundColor:  colur,
+            borderColor: 'rgb(255, 99, 132)',
+            data: temperature,
+        }]
+    },
+options: {}
+    // Configuration options go here
+    
+});
+    
+    console.log(chart)
+}
+function doSocketClose(evt) {
+    
+console.log('Close.');
+}
+}]);
+</script>
+
+</html>

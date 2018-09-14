@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+  <head>
+      <style>
+          * {
+              box-sizing: border-box;
+          }
+         
+          body {
+              font-family: Arial, Helvetica, sans-serif;
+          }
+         
+          /* Style the header */
+          .header {
+  overflow: hidden;
+  background-color: #086c85;
+  padding: 20px 10px;
+}
+
+
+.header a.logo {
+  font-size: 25px;
+  font-weight: bold;
+}
+
+.header a:hover {
+  background-color: rgb(48, 189, 231);
+  color: black;
+}
+.header h1{
+    color: rgb(11, 71, 87);
+    text-align:center;
+    background:white;
+    
+}
+.header a.active {
+  background-color: dodgerblue;
+  color: blue;
+}
+
+.header-right {
+  float: right;
+  
+}
+.header h2{
+    color: white;
+    font-size: 25px;
+    text-align:center;
+    
+    
+}
+
+         
+          /* Create two columns/boxes that floats next to each other */
+          nav {
+              float: left;
+              width: 30%;
+              height: 300px; /* only for demonstration, should be removed */
+              background: #ccc;
+              padding: 20px;
+          }
+         
+          /* Style the list inside the menu */
+          nav ul {
+              list-style-type: none;
+              padding: 0;
+          }
+         
+          article {
+              float: right;
+              padding: 20px;
+              width: 95%;
+              background-color: #1e7f97;
+              height:100px; /* only for demonstration, should be removed */
+          }
+         
+          /* Clear floats after the columns */
+          section:after {
+              content: "";
+              display: table;
+              clear: both;
+          }
+         
+          /* Style the footer */
+          footer {
+              background-color: rgb(73, 156, 194);
+              text-align: center;
+              color: white;
+          }
+         
+          .btn-group button {
+    background-color: #4CAF50; /* Green background */
+    border: 1px solid green; /* Green border */
+    color: white; /* White text */
+    padding: 10px 10px; /* Some padding */
+    cursor: pointer; /* Pointer/hand icon */
+    float: right; /* Float the buttons side by side */
+}
+
+/* Clear floats (clearfix hack) */
+.btn-group:after {
+    content: "";
+    clear: both;
+    display: table;
+}
+
+.btn-group button:not(:last-child) {
+    border-right: none; /* Prevent double borders */
+}
+h3{
+    color: white;
+}
+          </style>
+  </head>
+<body>
+    
+          <div class="header">
+                <img src="download.jpg" alt="Smiley face" height="150" width="180">
+                <div class="header-right">
+                        <h1>EAS DTO GARAGE-BLOCKCHAIN FOR BUISNESS </h1><h3>WITH IBM BLOCKCHAIN</h3>
+                        
+                </div>
+</div>
+
+
+
+<div class="btn-group">
+            
+            <button><a href="search.html" target="iframe_a">Search Drug</button>
+            <button><a href="searchOrder.html" target="iframe_a">Search order</button>
+            <button><a href="temperatureHistory.html" target="iframe_a">Temperature History</button>
+            <button><a href="reportProblem.html" target="iframe_a">Report Problem</button>
+            <button><a href="temeperatureUpdate.html" target="iframe_a">Update Temperature</button>
+            <button><a href="updateOrderStatus.html" target="iframe_a">Update Order Status</button>
+            <button><a href="updateDrugStatus.html" target="iframe_a">Update Drug Status</button>
+            <button><a href="placeOrder.html" target="iframe_a">Place Order</button>
+            <button><a href="updateNewBatch.html" target="iframe_a">Register New Batch</button>
+            <button><a href="registerDrug.html" target="iframe_a">Register Drug</button>
+            
+      </div>
+	   <br>
+<iframe height="450px" width="100%" src="dashboard.html" name="iframe_a"></iframe>
+<footer>
+  <p>@copyright 2018</p>
+</footer>
+</body>

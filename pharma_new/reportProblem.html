@@ -1,0 +1,138 @@
+<html>
+ 
+<head>
+  
+               
+<link rel="stylesheet"href="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/css/materialize.min.css">
+ 
+<!-- Compiled and minified JavaScript -->
+ 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/materialize/1.0.0-beta/js/materialize.min.js"></script>
+ 
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+ 
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+ 
+<script src="https://code.jquery.com/jquery-3.3.1.min.js"></script>
+ 
+<link href="https://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+<style>
+    body {font-family: Arial;}
+    div#envelope{
+    width: 55%;
+    margin: 10px 30% 10px 25%;
+    padding:10px 0;
+    border: 2px solid gray;
+    height: 90%;
+    }
+  
+  </style>
+</head>
+<body>
+<div ng-app="myApp" ng-controller="myCtrl">
+        <div id="envelope">
+    <h4><b> Report a Problem (All)</b></h4>
+    <div>
+    <table style="width:100%">
+    <tr><th><input type="text" name="BatchCode" placeholder="Enter batch ID" ng-model="BatchCode" required></th></tr>
+    <tr><th><input type="text" name="drugId" placeholder="Enter Drug Id" ng-model="drugId"></th></tr>
+    <tr><th><input type="text" name="pharmaReported" placeholder="Enter pharma Reported" ng-model="pharmaReported"></th></tr>
+    <tr><th><input type="submit" ng-click="Create()"></th></tr>
+    </table> 
+    </div>
+    </div>
+    <div ng-show="show">
+        <div style= "padding: 2%;""text-align: center;">
+            <p id="demo"></p>
+        </div>
+        </div>
+        </div>
+</div>
+ 
+</body>
+<script>
+  
+var app = angular.module('myApp', []);
+ 
+app.controller('myCtrl',['$scope','$http','$timeout',function ($scope,$http,$timeout) {
+    $scope.components=[];
+    $scope.components.name=[];
+    $scope.components.temeperature=[];
+    $scope.text=" "
+    $scope.uuid_search=" "
+    $scope.supplier=""
+    demoP = document.getElementById("demo");
+    
+    function init(){
+var websocket =new WebSocket("ws://ec2-54-158-121-223.compute-1.amazonaws.com:3000");
+websocket.addEventListener('open',evt =>doSocketOpen(evt));
+websocket.addEventListener('close',evt =>doSocketClose(evt));
+websocket.addEventListener('message',evt =>doSocketMessage(evt));
+}
+function doSocketClose(evt) {
+console.log('Close.');
+}
+function doSocketMessage(evt) {
+let data =JSON.parse(evt.data);
+console.log(data);
+$scope.show=true;
+//$scope.components.name.push(data.components[0].name)
+//$scope.components.temeperature.push(data.components[0].manufactureTemperature)
+$scope.text +="List of suppliers that provided this batch"+"<br>"
+for(j = 0; j < data.batch.supplier.length; j++){
+    $scope.text +=j+1 +") "+ data.batch.supplier[j].id+"<br>"
+    $scope.text +="The list of components with temepertature"+"<br>"
+for (i = 0; i < data.batch.supplier[j].components.length; i++) {
+    $scope.text += i+1 +") "+data.batch.supplier[j].components[i].name + "    "+data.batch.supplier[j].components[i].manufactureTemperature+"<br>";
+}
+$scope.text +="<br>"
+}
+document.getElementById("demo").innerHTML = $scope.text;
+}
+function doSocketOpen(evt) {
+console.log('Open.');
+}
+$scope.Create = function(){
+    init();
+$scope.setValue();
+}
+$scope.setValue=function() {
+ 
+  var request={
+    "$class": "org.acme.pharma_network.reportProblem",
+  "BatchCode": $scope.BatchCode,
+  "drugId": $scope.drugId,
+  "pharmaReported": $scope.pharmaReported
+}
+     var requestInfo = Request();
+   
+     data : requestInfo
+ 
+  var res = $http.post('http://ec2-54-158-121-223.compute-1.amazonaws.com:3000/api/reportProblem',request).then(function successCallback(response){
+           alert("Successfully created product");
+           $scope.update_response=response;
+          
+       }, function errorCallback(response){
+           console.log("POST-ing of data failed");
+       });
+}
+ 
+function Request() {
+ 
+  return {
+    "Request" : {
+        "$class": "org.acme.pharma_network.reportProblem",
+        "BatchCode": "",
+        "drugId": "",
+  "pharmaReported": ""
+   }
+    }
+  };
+ 
+}]);
+ 
+ 
+ 
+</script>
+ 
+</html>

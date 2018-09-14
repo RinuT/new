@@ -1,0 +1,327 @@
+/**
+ * Place an order for a drug
+ * @param {org.acme.pharma_network.PlaceOrder} placeOrder - the PlaceOrder transaction
+ * @transaction
+ */
+async function placeOrder(orderRequest) {
+  	var factory = getFactory();
+  	var namespace = 'org.acme.pharma_network';
+    const registry = await getAssetRegistry('org.acme.pharma_network.newDrug');
+    const new_drug = await registry.get(orderRequest.drug.din);
+  	var order = factory.newResource(namespace, 'Order', orderRequest.orderId);
+  if (orderRequest.drug.drugStatus === 'WITHDRAWN') {
+
+              throw new Error('Order cannot be placed as drug is withdrawn'); 
+       }else{
+          if(orderRequest.quantity <= new_drug.drug.quantity)
+  {
+    order.drug = orderRequest.drug;
+ 	order.quantity = orderRequest.quantity;
+    order.orderStatus = 'WITH_MANUFACTURER';
+    order.moisture=orderRequest.moisture
+   	order.shake=orderRequest.shake
+    order.temperature=orderRequest.temperature
+    if(orderRequest.temperature>50){
+    order.drugStatus="WITHDRAWN"
+    } else{
+      order.drugStatus=orderRequest.drugStatus
+    }
+    order.orderer = factory.newRelationship(namespace, 'Pharmacy', orderRequest.orderer.getIdentifier());
+  	
+      
+    // save the order
+    return getAssetRegistry(order.getFullyQualifiedType())
+  	.then(function (assetRegistry) {
+      new_drug.drug.quantity = (new_drug.drug.quantity-orderRequest.quantity)
+      registry.update(new_drug);
+     return assetRegistry.add(order);
+    })
+    
+  	.then(function () {
+      // emit the event
+      var placeOrderEvent = factory.newEvent(namespace, 'PlaceOrderEvent');
+      placeOrderEvent.orderId = order.orderId;      
+      placeOrderEvent.drug = order.drug;
+      placeOrderEvent.orderer = order.orderer;
+      placeOrderEvent.quantity = order.quantity;
+      placeOrderEvent.temperature = order.temperature;
+      placeOrderEvent.orderStatus = order.orderStatus;
+      
+      //emit(placeOrderEvent);
+        //const temepratureHistory = factory.newEvent('org.acme.pharma_network', 'temepratureHistory');
+    //temepratureHistory.orderId = order.orderId;
+    //temepratureHistory.temperature = order.temperature;
+    //temepratureHistory.orderStatus = order.orderStatus;
+    emit(placeOrderEvent);
+      
+    });
+    
+
+  } else
+     throw new Error('Order cannot be placed as order quantity is graeter that available drug quantity'); 
+       }
+
+}
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.updateNewBatch} updateNewBatch -
+ * @transaction
+ */
+async function updateNewBatch(updateNewBatch) { 
+  const DrugRegistry = await getAssetRegistry('org.acme.pharma_network.newDrug');
+  const new_drug = await DrugRegistry.get(updateNewBatch.batch.batch.drugId);
+  
+  const registry = await getAssetRegistry('org.acme.pharma_network.newBatch');
+  const factory = getFactory();
+  const newBatch = factory.newResource('org.acme.pharma_network', 'newBatch', updateNewBatch.batch.batchCode);
+  new_drug.drug.quantity=(new_drug.drug.quantity+updateNewBatch.batch.batch.quantity)
+  new_drug.drug.batch.push(updateNewBatch.batch);
+  DrugRegistry.update(new_drug)
+  
+}
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.register} create -
+ * @transaction
+ */
+async function create(createDrug) {   
+     const registry = await getAssetRegistry('org.acme.pharma_network.newDrug');
+    const factory = getFactory();
+
+    // Create the bond asset.
+    const newDrug = factory.newResource('org.acme.pharma_network', 'newDrug', createDrug.din);
+    newDrug.drug = createDrug.drug;
+	const create = factory.newEvent('org.acme.pharma_network', 'create');
+    console.log("event emitted" +newDrug);
+    create.din = newDrug.din;
+    create.drug = newDrug.drug;
+    emit(create);
+    // Add the bond asset to the registry.
+    await registry.add(newDrug);
+}
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.search} search -
+ * @transaction
+ */
+async function search(search) {   
+     const factory = getFactory();
+     const results = await query('selectdrug', {din : search.din});
+     console.log(results);
+  	 const create = factory.newEvent('org.acme.pharma_network', 'create');
+     create.din = results[0].din;
+     create.drug = results[0].drug;
+     emit(create);
+}
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.searchOrder} searchOrder -
+ * @transaction
+ */
+async function searchOrder(searchOrder) {   
+     const factory = getFactory();
+     const results = await query('selectOrder', {orderId : searchOrder.orderId});
+     console.log(results);
+  	 const create = factory.newEvent('org.acme.pharma_network', 'searchOrderEvent');
+     create.orderId = results[0].orderId;
+     create.quantity = results[0].quantity;
+   create.temperature = results[0].temperature;
+   create.moisture = results[0].moisture;
+   create.shake = results[0].shake;
+   create.orderStatus = results[0].orderStatus;
+   create.drugStatus = results[0].drugStatus;
+     emit(create);
+}
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.registerSupllier} registerSupllier -
+ * @transaction
+ */
+async function registerSupllier(registerSupllier) {   
+     const registry = await getAssetRegistry('org.acme.pharma_network.newSupplier');
+  console.log(registerSupllier);
+    const factory = getFactory();
+  console.log(registerSupllier.supplierId)
+    const newSupplier = factory.newResource('org.acme.pharma_network', 'newSupplier', registerSupllier.supplierId);
+  console.log(registerSupllier.components.length)
+    newSupplier.components = registerSupllier.components;
+    await registry.add(newSupplier);
+}
+
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.reportProblem} reportProblem -
+ * @transaction
+ */
+async function reportProblem(reportProblem) { 
+  console.log(reportProblem)
+    const registry = await getAssetRegistry('org.acme.pharma_network.newBatch');
+  	const factory = getFactory();
+    const newBatch = factory.newResource('org.acme.pharma_network', 'newBatch', reportProblem.BatchCode);
+      const results = await query('selectbatch', {batchCode : reportProblem.BatchCode});
+  const SupRegistry = await getAssetRegistry('org.acme.pharma_network.newSupplier');
+    const newSupplier = factory.newResource('org.acme.pharma_network', 'newBatch',   results[0].batch.supplier.getIdentifier());
+  	const resultSupplier = await query('selectSupplier', {id : results[0].batch.supplier.getIdentifier()});
+    console.log(resultSupplier);
+  console.log(resultSupplier[0].id)
+  console.log(resultSupplier[0].components)
+  const create = factory.newEvent('org.acme.pharma_network', 'reportProb');
+    create.id = resultSupplier[0].id;
+    create.components = resultSupplier[0].components;
+    emit(create);
+    
+}
+
+
+/**
+ * Publish a new bond
+ * @param {org.acme.pharma_network.temepratureUpdate} temepratureUpdate - the publishBond transaction
+ * @transaction
+ */
+async function temepratureUpdate(temepratureUpdate) {  // eslint-disable-line no-unused-vars
+	const factory = getFactory();
+    const registry = await getAssetRegistry('org.acme.pharma_network.Order');
+   	const new_Order = await registry.get(temepratureUpdate.orderId);
+ 	new_Order.temperature =  temepratureUpdate.temperature
+   if(temepratureUpdate.moisture>'50' || temepratureUpdate.shake>'50'||temepratureUpdate.temperature>'50')
+         {
+           new_Order.drugStatus='WITHDRAWN';
+         }
+    await registry.update(new_Order);
+  const temepratureHistory = factory.newEvent('org.acme.pharma_network', 'temepratureHistory');
+    temepratureHistory.orderId = new_Order.orderId;
+    temepratureHistory.temperature = new_Order.temperature;
+    temepratureHistory.orderStatus = new_Order.orderStatus;
+    emit(temepratureHistory);
+}
+
+/**
+ * Search the product by uuid
+ * @param {org.acme.pharma_network.temperatureEvent} new_Order - the publishBond transaction
+ * @transaction
+ */
+async function temperatureEvent(search) {  // eslint-disable-line no-unused-vars
+  const factory = getFactory();
+  const results = await query('getHistorianRecords');
+  console.log(results)
+  if(results.length>0) {
+    for(let i=0;i<results.length;i++){
+      console.log(results[i].eventsEmitted[0]);
+     if(search.orderId==results[i].eventsEmitted[0].orderId){
+      const temepratureHistory = factory.newEvent('org.acme.pharma_network', 'temepratureHistory');
+    temepratureHistory.orderId = results[i].eventsEmitted[0].orderId;
+    temepratureHistory.temperature = results[i].eventsEmitted[0].temperature;
+    temepratureHistory.orderStatus = results[i].eventsEmitted[0].orderStatus;
+    emit(temepratureHistory);
+     }
+    }
+  }
+  else
+    throw new Error('Product  not available for the given UUID');   
+}
+/**
+ * Update the status of an order
+ * @param {org.acme.pharma_network.UpdateOrderStatus} updateOrderStatus - the UpdateOrderStatus transaction
+ * @transaction
+ */
+async function updateOrderStatus(updateOrderRequest) {
+ 	console.log('updateOrderStatus');
+    var factory = getFactory();
+  	var namespace = 'org.acme.pharma_network';
+  	const results =await query('selectorderdetail', {orderId :updateOrderRequest.order.orderId});
+    const orderRegistry = await getAssetRegistry('org.acme.pharma_network.Order'); 
+    console.log(updateOrderRequest.order.drug.din+" "+updateOrderRequest.order.orderId+" "+updateOrderRequest)
+    const new_order = await orderRegistry.get(updateOrderRequest.order.orderId);
+       if (updateOrderRequest.order.drugStatus === 'WITHDRAWN') {
+              throw new Error('Order cannot be shipped as drug is withdrawn'); 
+       }
+       else
+       {
+          console.log(results);
+ 	   if(results.length>0) {
+          new_order.orderStatus = updateOrderRequest.orderStatus;
+          new_order.moisture=updateOrderRequest.moisture;
+          new_order.shake=updateOrderRequest.shake;
+         new_order.temperature=updateOrderRequest.temperature;
+          await orderRegistry.update(new_order); 
+         console.log("set");
+         if(updateOrderRequest.moisture>'50' || updateOrderRequest.shake>'50'||updateOrderRequest.temperature>'50')
+         {
+           new_order.drugStatus='WITHDRAWN';
+           await orderRegistry.update(new_order);
+         }
+         
+         const temepratureHistory = factory.newEvent('org.acme.pharma_network', 'temepratureHistory');
+    temepratureHistory.orderId = new_order.orderId;
+    temepratureHistory.temperature = new_order.temperature;
+    temepratureHistory.orderStatus = new_order.orderStatus;
+    emit(temepratureHistory);  
+         }
+       }
+    
+}
+
+/**
+ * to display status with id
+ * @param {org.acme.pharma_network.displayDrugs} display -
+ * @transaction
+ */
+async function displayDrugs() {   
+    const results = await query('selectdrugs');
+  	const factory = getFactory();
+    const displayDrugsEvent = factory.newEvent('org.acme.pharma_network', 'displayDrugsEvent');
+      	if(results.length>0)
+        {
+          for(let i=0;i<results.length;i++)
+          {
+    		 displayDrugsEvent.din = results[i].din;
+   			 displayDrugsEvent.drugStatus = results[i].drug.drugStatus;
+          	 emit(displayDrugsEvent);  
+          }
+         
+        }
+}
+
+
+/**
+ * Update the status of a drug
+ * @param {org.acme.pharma_network.UpdateDrugStatus} updateDrugStatus - the UpdateDrugStatus transaction
+ * @transaction
+ */
+async function updateDrugStatus(updateDrugRequest) {  // eslint-disable-line no-unused-vars
+console.log('updateDrugRequest');
+    var factory = getFactory();
+  	var namespace = 'org.acme.pharma_network';
+  	const results =await query('selectorderdetail', {orderId :updateDrugRequest.order.orderId});
+    const orderRegistry = await getAssetRegistry('org.acme.pharma_network.Order'); 
+    console.log(updateDrugRequest.order.drug.din+" "+updateDrugRequest.order.orderId+" "+updateDrugRequest)
+    const new_order = await orderRegistry.get(updateDrugRequest.order.orderId);
+       if (updateDrugRequest.order.drugStatus === 'WITHDRAWN') {
+              throw new Error('Order cannot be shipped as drug is withdrawn'); 
+       }
+       else
+       {
+          console.log(results);
+ 	   if(results.length>0) {
+          new_order.drugStatus = updateDrugRequest.drugStatus;
+          new_order.moisture=updateDrugRequest.moisture;
+          new_order.shake=updateDrugRequest.shake;
+         new_order.temperature=updateDrugRequest.temperature;
+          await orderRegistry.update(new_order); 
+         console.log("set");
+         if(updateDrugRequest.moisture>'50' || updateDrugRequest.shake>'50'||updateDrugRequest.temperature>'50')
+         {
+           new_order.drugStatus='WITHDRAWN';
+           await orderRegistry.update(new_order);
+         }
+         
+         const temepratureHistory = factory.newEvent('org.acme.pharma_network', 'temepratureHistory');
+    temepratureHistory.orderId = new_order.orderId;
+    temepratureHistory.temperature = new_order.temperature;
+    temepratureHistory.orderStatus = new_order.orderStatus;
+    emit(temepratureHistory);  
+         }
+       }
+    
+}
+
