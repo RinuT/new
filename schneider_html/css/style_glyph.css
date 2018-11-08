@@ -1,0 +1,152 @@
+@font-face {
+  font-family: 'icomoon';
+  src:  url('../fonts/icomoon.eot?1g5f7c');
+  src:  url('../fonts/icomoon.eot?1g5f7c#iefix') format('embedded-opentype'),
+    url('../fonts/icomoon.ttf?1g5f7c') format('truetype'),
+    url('../fonts/icomoon.woff?1g5f7c') format('woff'),
+    url('../fonts/icomoon.svg?1g5f7c#icomoon') format('svg');
+  font-weight: normal;
+  font-style: normal;
+}
+
+[class^="icon-"], [class*=" icon-"] {
+  /* use !important to prevent issues with browser extensions that change fonts */
+  font-family: 'icomoon' !important;
+  speak: none;
+  font-style: normal;
+  font-weight: normal;
+  font-variant: normal;
+  text-transform: none;
+  line-height: 1;
+
+  /* Better Font Rendering =========== */
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.icon-Add_To_1x:before {
+  content: "\e900";
+}
+.icon-Add_To_2x:before {
+  content: "\e901";
+}
+.icon-Button_Arrow_1x:before {
+  content: "\e902";
+}
+.icon-Button_Arrow_2x:before {
+  content: "\e903";
+}
+.icon-Close_1x:before {
+  content: "\e904";
+}
+.icon-Close_2x:before {
+  content: "\e905";
+}
+.icon-Close_Small_1x:before {
+  content: "\e906";
+}
+.icon-Close_Small_2x:before {
+  content: "\e907";
+}
+.icon-Dividebuy_99_Percent_Approval_1x:before {
+  content: "\e908";
+}
+.icon-Dividebuy_99_Percent_Approval_2x:before {
+  content: "\e909";
+}
+.icon-Dividebuy_No_Hidden_Fees_1x:before {
+  content: "\e90a";
+}
+.icon-Dividebuy_No_Hidden_Fees_2x:before {
+  content: "\e90b";
+}
+.icon-Dividebuy_No_Paperwork_1x:before {
+  content: "\e90c";
+}
+.icon-Dividebuy_No_Paperwork_2x:before {
+  content: "\e90d";
+}
+.icon-Dividebuy_Quick_Application_1x:before {
+  content: "\e90e";
+}
+.icon-Dividebuy_Quick_Application_2x:before {
+  content: "\e90f";
+}
+.icon-Go_Arrow_1x:before {
+  content: "\e910";
+}
+.icon-Go_Arrow_2x:before {
+  content: "\e911";
+}
+.icon-Info_1x:before {
+  content: "\e912";
+}
+.icon-Info_2x:before {
+  content: "\e913";
+}
+.icon-Link_Arrow_1x:before {
+  content: "\e914";
+}
+.icon-Link_Arrow_2x:before {
+  content: "\e915";
+}
+.icon-Mattress_Breatheable_Fabric_1x:before {
+  content: "\e916";
+}
+.icon-Mattress_Breatheable_Fabric_2x:before {
+  content: "\e917";
+}
+.icon-Mattress_Comfort_Layers_1x:before {
+  content: "\e918";
+}
+.icon-Mattress_Comfort_Layers_2x:before {
+  content: "\e919";
+}
+.icon-Mattress_Flag_Stitching_1x:before {
+  content: "\e91a";
+}
+.icon-Mattress_Flag_Stitching_2x:before {
+  content: "\e91b";
+}
+.icon-Mattress_Fluted_Padded_1x:before {
+  content: "\e91c";
+}
+.icon-Mattress_Fluted_Padded_2x:before {
+  content: "\e91d";
+}
+.icon-Mattress_Hand_Tufting_1x:before {
+  content: "\e91e";
+}
+.icon-Mattress_Hand_Tufting_2x:before {
+  content: "\e91f";
+}
+.icon-Mattress_Reinforced_Edges_1x:before {
+  content: "\e920";
+}
+.icon-Mattress_Reinforced_Edges_2x:before {
+  content: "\e921";
+}
+.icon-Mattress_Wool_Layer_1x:before {
+  content: "\e922";
+}
+.icon-Mattress_Wool_Layer_2x:before {
+  content: "\e923";
+}
+.icon-Minimise_Small_1x:before {
+  content: "\e924";
+}
+.icon-Minimise_Small_2x:before {
+  content: "\e925";
+}
+.icon-Play_1x:before {
+  content: "\e926";
+}
+.icon-Play_2x:before {
+  content: "\e927";
+}
+.icon-Scroll_Arrow_1x:before {
+  content: "\e928";
+}
+.icon-Scroll_Arrow_2x:before {
+  content: "\e929";
+}

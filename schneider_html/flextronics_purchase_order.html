@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Schneider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+
+<body>
+<div class="container-fluid"> 
+  
+  <!-- Header Section starts here-->
+  <header class="header_bg">
+    <div class="header_left"></div>
+    <div class="header_right"></div>
+    <div class="container">
+      <div class="logo_pharma"> <a href="index.html"><img src="images/logo.png" alt="logo"/></a> </div>
+      <div class="banner_text_right"> Blockchain for Business<br>
+        <b>WITH IBM BLOCKCHAIN</b> </div>
+    </div>
+  </header>
+  <!-- Header Section ends here--> 
+  
+  <!-- Content Section ends here-->
+  <div class="breadcrumb_main">
+    <div class="left"><a href="#"><img src="images/back.png">&nbsp;Home</a></div>
+    <div class="right"><a href="#"><img src="images/sign_out.png">&nbsp;Signout</a></div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="dashboard_drk">
+    <div class="dashboard_drk_left">
+      <h1>Flextronics</h1>
+      <div class="user"><span>Username</span>
+        Cheif Supplying Officer</div>
+		<ul class="left_menu"><li><a href="#"><img src="images/icon_9.png">Purchase Order</a></li><li><a href="#"><img src="images/icon_10.png">Invoice</a></li><div class="clearfix"></div></ul>
+      
+      <ul class="left_submenu">
+        <li><img src="images/icon_7.png">&nbsp;&nbsp;Notification</li>
+        <li><img src="images/icon_8.png">&nbsp;&nbsp;Report</li>
+      </ul>
+    </div>
+    <div class="dashboard_drk_right">
+      <h3>Purchase Order</h3>
+      <ul>
+      	<li>Purchase Order No. : <a href="#">12234232</a> | PO Date: 18  Nov 2018 <span class="status">Status: <span class="red">Open</span> <a href="#"><img src="images/arrow.png"></a></span></li>
+      	<li>Purchase Order No. : <a href="#">10024232</a> | PO Date: 09 Oct 2018 <span class="status">Status: <span class="green">Closed</span> <a href="#"><img src="images/arrow.png"></a></span></li>
+      	<li>Purchase Order No. : <a href="#">12214447</a> | PO Date: 08 Oct 2018 <span class="status">Status: <span class="green">Closed</span> <a href="#"><img src="images/arrow.png"></a></span></li>
+      	<li>Purchase Order No. : <a href="#">47554213</a> | PO Date: 28 Sept 2018 <span class="status">Status: <span class="green">Closed</span> <a href="#"><img src="images/arrow.png"></a></span></li>
+      </ul>
+      <div class="clearfix"></div>
+	  
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <!-- Content Section ends here--> 
+  
+  <!-- Footer Section starts here-->
+  <footer class="footer">©  copyright 2018</footer>
+  <!-- Footer Section ends here--> 
+  
+</div>
+</body>
+<script>
+  
+    var app = angular.module('myApp', []);
+    $scope.update_response=[];
+         app.controller('myCtrl',['$scope','$http','$timeout',function ($scope,$http,$timeout) {
+          var res = $http.post('http://ec2-18-223-205-154.us-east-2.compute.amazonaws.com:3000/api/PlaceOrder',request).then(function successCallback(response){
+                     alert("Successfully placed order");
+                     $scope.update_response=response;
+                     $scope.sucess=true
+                     $scope.transactionId=$scope.update_response.data.transactionId
+                   
+                     
+                 }, function errorCallback(response){
+                     console.log("POST-ing of data failed");
+                 });
+           
+           }]);
+        </script>
+</html>

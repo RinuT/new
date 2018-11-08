@@ -1,0 +1,91 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Schneider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.6.9/angular.min.js"></script>
+<script src="https://rawgit.com/gdi2290/angular-websocket/v1.0.9/angular-websocket.js"></script>
+</head>
+
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+<div class="container-fluid"> 
+  
+  <!-- Header Section starts here-->
+  <header class="header_bg">
+    <div class="header_left"></div>
+    <div class="header_right"></div>
+    <div class="container">
+      <div class="logo_pharma"> <a href="index.html"><img src="images/logo.png" alt="logo"/></a> </div>
+      <div class="banner_text_right"> Blockchain for Business<br>
+        <b>WITH IBM BLOCKCHAIN</b> </div>
+    </div>
+  </header>
+  <!-- Header Section ends here--> 
+  
+  <!-- Content Section ends here-->
+  <div class="schneider_banner">
+    <div class="login_form schneider">
+      <div class="left">
+        <ul style="">
+          <li><a href="supplier_login.html">Supplier</a></li>
+         <li><a href="schneider_login.html">Schneider</a></li>
+        </ul>
+      </div>
+      <div class="right">
+        <ul>
+          <li>
+            <label>User Name</label>
+          </li>
+          <li>
+            <input type="text" ng-model="user">
+          </li>
+          <li>
+            <label>Password</label>
+          </li>
+          <li>
+            <input type="password" ng-model="password">
+          </li>
+          <li>
+            <input type="button" value="Login" ng-click="login()"> 
+          </li>
+        </ul>
+      </div>
+      <div class="clearfix"></div>
+      
+    </div>
+  </div>
+</div>
+<!-- Content Section ends here--> 
+
+<!-- Footer Section starts here-->
+<footer class="footer">©  copyright 2018</footer>
+<!-- Footer Section ends here-->
+</div>
+</div>
+</body>
+<script>
+  
+    var app = angular.module('myApp', []);
+       
+    app.controller('myCtrl',['$scope','$window','$http','$timeout',function ($scope,$http,$window,$timeout) {
+  
+    $scope.userId="";
+    $scope.pass="";
+  
+    $scope.login=function(){
+       $scope.userId=$scope.user
+       $scope.pass=$scope.password
+       if($scope.userId=="schneider" & $scope.pass=="pass"){
+        location.replace("schneider_purchase.html");
+        }
+       else
+        alert('Login incorrect');
+    }
+       
+      }]);
+      </script>
+</html>

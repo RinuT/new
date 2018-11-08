@@ -1,0 +1,158 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>Schneider</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<link href="css/bootstrap.min.css" rel="stylesheet">
+<link href="css/style.css" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css?family=Open+Sans" rel="stylesheet">
+</head>
+
+<body>
+    <div ng-app="myApp" ng-controller="myCtrl">
+<div class="container-fluid"> 
+  
+  <!-- Header Section starts here-->
+  <header class="header_bg">
+    <div class="header_left"></div>
+    <div class="header_right"></div>
+    <div class="container">
+      <div class="logo_pharma"> <a href="index.html"><img src="images/logo.png" alt="logo"/></a> </div>
+      <div class="banner_text_right"> Blockchain for Business<br>
+        <b>WITH IBM BLOCKCHAIN</b> </div>
+    </div>
+  </header>
+  <!-- Header Section ends here--> 
+  
+  <!-- Content Section ends here-->
+  <div class="breadcrumb_main">
+    <div class="left"><a href="#"><img src="images/back.png">&nbsp;Home</a></div>
+    <div class="right"><a href="#"><img src="images/sign_out.png">&nbsp;Signout</a></div>
+    <div class="clearfix"></div>
+  </div>
+  <div class="dashboard_drk">
+    <div class="dashboard_drk_left">
+      <h1>Flextronics</h1>
+      <div class="user"><span>Username</span>
+        Cheif Supplying Officer</div>
+		<ul class="left_menu"><li><a href="#"><img src="images/icon_9.png">Purchase Order</a></li><li><a href="#"><img src="images/icon_10.png">Invoice</a></li><div class="clearfix"></div></ul>
+      
+      <ul class="left_submenu">
+        <li><img src="images/icon_7.png">&nbsp;&nbsp;Notification</li>
+        <li><img src="images/icon_8.png">&nbsp;&nbsp;Report</li>
+      </ul>
+    </div>
+    <div class="dashboard_drk_right">
+        <h3>Purchase Order</h3>
+        <div class="col-md-4">
+          <label>PO Number</label>
+          <input type="text"  ng-model="PONumber">
+          <label>PO Qty</label>
+          <input type="text"  ng-model="POQty">
+          <label>PO Creation Date</label>
+          <input type="date" ng-model="POCreationDate">
+          <label>Delivery Note Number</label>
+          <span class="wht"><input type="text" ng-model="DeliveryNoteNo."></span>
+        </div>
+        <div class="col-md-4">
+          <label>Line No.</label>
+          <input type="text" ng-model="LineNo.">
+          <label>UOP</label>
+          <input type="text" ng-model="UOP">
+          <label>Price</label>
+          <input type="text" ng-model="POCreationDate">
+          <label>Shipment Date</label>
+          <span class="wht"><input type="date" ng-model="ShipmentDate"></span>
+        </div>
+        <div class="col-md-4">
+          <label>SE Meterial Code</label>
+          <input type="text" ng-model="SEMetrialCode">
+          <label>Delivery Date</label>
+          <input type="date" ng-model="DeliveryDate">
+          <label>Currency</label>
+          <input type="text" ng-model="Currency">
+          <label>Shipment Qty</label>
+          <span class="wht"><input type="text" ng-model="ShipmentQty"></span>
+        </div>
+        <div class="clearfix"></div>
+      <div class="submit_block"></div>
+      
+      <input type="submit" value="SUBMIT" ng-click="submit()">
+    </div>
+    <div class="clearfix"></div>
+  </div>
+  <!-- Content Section ends here--> 
+  
+  <!-- Footer Section starts here-->
+  <footer class="footer">©  copyright 2018</footer>
+  <!-- Footer Section ends here--> 
+  </div>
+</div>
+</body>
+<script>
+  
+    var app = angular.module('myApp', []);
+         
+         app.controller('myCtrl',['$scope','$http','$timeout',function ($scope,$http,$timeout) {
+           $scope.submit = function(){
+           $scope.setValue();
+           }
+           $scope.setValue=function() {
+             var DeliveryDate = new Date();
+             DeliveryDate=$scope.DeliveryDate
+             var CreationDate = new Date();
+             CreationDate=$scope.CreationDate
+             var request=
+                         {
+                      "$class": "com.cts.ipm.p2pNetwork.ShipmentNotification",
+                      "batchId": $scope.batchId,
+                      "deliverynote": {
+                        "$class": "com.cts.ipm.p2pNetwork.delNote",
+                        "poNumber": $scope.PONumber,
+                        "lineNumber":  $scope.LineNo,
+                        "deliveryNoteNumber": $scope.deliveryNoteNumber,
+                        "materialCode": $scope.SEMeterialCode,
+                        "quantity": $scope.POQty,
+                        "UOP": $scope.UOP,
+                        "shipmentDate": $scope.shipmentDate,
+                        "shipmentQuantity": $scope.shipmentQuantity
+                    }
+                    }
+               var requestInfo = Request();
+             
+               data : requestInfo
+           
+             var res = $http.post('http://ec2-18-223-205-154.us-east-2.compute.amazonaws.com:3000/api/PlaceOrder',request).then(function successCallback(response){
+                     alert("Successfully placed order");
+                     $scope.update_response=response;
+                     $scope.sucess=true
+                     $scope.transactionId=$scope.update_response.data.transactionId
+                     
+                 }, function errorCallback(response){
+                     console.log("POST-ing of data failed");
+                 });
+           }
+           
+           function Request() {
+           
+             return {
+               "Request" : {
+                  "$class": "com.cts.ipm.p2pNetwork.ShipmentNotification",
+                  "batchId": " ",
+                  "deliverynote": {
+                    "$class": "com.cts.ipm.p2pNetwork.delNote",
+                    "poNumber": " ",
+                    "lineNumber": " ",
+                    "deliveryNoteNumber": " ",
+                    "materialCode": " ",
+                    "quantity": " ",
+                    "UOP": " ",
+                    "shipmentDate": " ",
+                    "shipmentQuantity": " "
+                }
+                }
+               }
+             };
+           }]);
+        </script>
+</html>
